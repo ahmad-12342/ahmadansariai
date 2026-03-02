@@ -37,9 +37,9 @@ const DashboardLayout = ({ children }) => {
 
     // Logged in — show dashboard
     return (
-        <div className="min-h-screen bg-background text-foreground">
+        <div className="min-h-screen bg-background text-foreground flex overflow-hidden">
             <Sidebar />
-            <main className="ml-64 p-8 min-h-screen print:ml-0 print:p-0">
+            <main className="flex-1 overflow-y-auto p-8 print:p-0 no-scrollbar">
                 <div className="max-w-6xl mx-auto">
                     {children}
                 </div>

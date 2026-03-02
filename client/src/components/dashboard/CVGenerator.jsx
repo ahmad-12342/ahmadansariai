@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Download, User as UserIcon, Briefcase, GraduationCap, Code, Plus, Trash2, Edit3, Eye } from 'lucide-react';

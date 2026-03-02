@@ -1,23 +1,23 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ImageIcon, Video, FileText, Sparkles, Download, Trash2, Search, Filter, Clock, Zap, ExternalLink, X } from 'lucide-react';
+import { ImageIcon, Video, FileText, Sparkles, Download, Trash2, Search, Filter, Clock, Zap, ExternalLink, X, History, MessageSquare, BookOpen } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { db } from '@/lib/firebase';
 import { collection, query, where, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
 const typeIcon = {
+    chat: MessageSquare,
     image: ImageIcon,
-    video: Video,
-    cv: FileText,
-    content: Sparkles,
+    resume: FileText,
+    story: BookOpen,
 };
 
 const typeColor = {
+    chat: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
     image: "text-blue-400 bg-blue-500/10 border-blue-500/20",
-    video: "text-purple-400 bg-purple-500/10 border-purple-500/20",
-    cv: "text-pink-400 bg-pink-500/10 border-pink-500/20",
-    content: "text-orange-400 bg-orange-500/10 border-orange-500/20",
+    resume: "text-purple-400 bg-purple-500/10 border-purple-500/20",
+    story: "text-pink-400 bg-pink-500/10 border-pink-500/20",
 };
 
 export default function HistoryPage() {
@@ -38,10 +38,14 @@ export default function HistoryPage() {
                     orderBy("createdAt", "desc")
                 );
                 const querySnapshot = await getDocs(q);
-                const data = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
+                const data = querySnapshot.docs.map(doc => {
+                    const d = doc.data();
+                    return {
+                        id: doc.id,
+                        ...d,
+                        createdAt: d.createdAt?.toDate ? d.createdAt.toDate().toISOString() : d.createdAt
+                    };
+                });
                 setGenerations(data);
             } catch (error) {
                 console.error("Error fetching history:", error);
@@ -99,15 +103,15 @@ export default function HistoryPage() {
                 transition={{ delay: 0.2 }}
                 className="flex flex-col md:flex-row gap-4 justify-between items-center"
             >
-                <div className="flex gap-2 p-1 glass rounded-2xl border border-white/5 overflow-x-auto w-full md:w-auto">
-                    {['all', 'image', 'video', 'cv', 'content'].map((f) => (
+                <div className="flex gap-2 p-1 glass rounded-2xl border border-white/5 overflow-x-auto w-full md:w-auto no-scrollbar">
+                    {['all', 'chat', 'image', 'resume', 'story'].map((f) => (
                         <button
                             key={f}
                             onClick={() => setFilter(f)}
                             className={`px-4 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${filter === f ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'text-gray-500 hover:text-white'
                                 }`}
                         >
-                            {f.charAt(0).toUpperCase() + f.slice(1)}
+                            {f === 'all' ? 'All Creations' : f.charAt(0).toUpperCase() + f.slice(1)}
                         </button>
                     ))}
                 </div>
@@ -177,7 +181,7 @@ export default function HistoryPage() {
                                             <div className="flex justify-between items-center">
                                                 <p className="text-xs text-gray-400 flex items-center gap-1">
                                                     <Clock className="w-3 h-3" />
-                                                    {new Date(item.createdAt).toLocaleDateString()}
+                                                    {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Just now'}
                                                 </p>
                                                 <div className="flex gap-2">
                                                     <button
@@ -254,7 +258,7 @@ export default function HistoryPage() {
                                 <div className="grid grid-cols-2 gap-4 mb-10">
                                     <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
                                         <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Generated On</p>
-                                        <p className="text-sm font-bold text-white">{new Date(selectedItem.createdAt).toLocaleDateString()}</p>
+                                        <p className="text-sm font-bold text-white">{selectedItem.createdAt ? new Date(selectedItem.createdAt).toLocaleDateString() : '—'}</p>
                                     </div>
                                     <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
                                         <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Impact</p>

@@ -11,16 +11,18 @@ import {
     User,
     CreditCard,
     LogOut,
-    ChevronRight
+    ChevronRight,
+    MessageSquare,
+    BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
+    { icon: MessageSquare, label: 'AI Chat', href: '/dashboard/chat' },
     { icon: ImageIcon, label: 'Image Gen', href: '/dashboard/images' },
-    { icon: Video, label: 'Video Studio', href: '/dashboard/videos' },
-    { icon: FileText, label: 'Resume Builder', href: '/dashboard/cv' },
-    { icon: Sparkles, label: 'Content Writer', href: '/dashboard/content' },
+    { icon: FileText, label: 'Resume Analyzer', href: '/dashboard/resume' },
+    { icon: BookOpen, label: 'Story Generator', href: '/dashboard/story' },
 ];
 
 const secondaryItems = [
@@ -32,7 +34,7 @@ const Sidebar = () => {
     const pathname = usePathname();
 
     return (
-        <aside className="w-64 h-screen glass border-r border-white/10 flex flex-col p-6 fixed left-0 top-0 print:hidden">
+        <aside className="w-64 h-screen glass border-r border-white/10 flex flex-col p-6 print:hidden">
             <Link href="/" className="flex items-center gap-2 mb-10 pl-2">
                 <Sparkles className="text-primary w-6 h-6" />
                 <span className="text-xl font-bold">Promptova</span>

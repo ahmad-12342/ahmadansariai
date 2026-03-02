@@ -62,4 +62,37 @@ body {
       radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.15) 0, transparent 50%),
       radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.15) 0, transparent 50%);
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Custom Scrollbar for all other sections */
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Force dark standard elements */
+html {
+  color-scheme: dark;
 }

@@ -1,29 +1,29 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ImageIcon, Video, FileText, Sparkles, TrendingUp, CreditCard, Clock, History, Zap, Loader2 } from 'lucide-react';
+import { MessageSquare, ImageIcon, LayoutDashboard, FileText, BookOpen, Sparkles, TrendingUp, CreditCard, Clock, History, Zap, Loader2, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 
 const tools = [
-    { name: "AI Image Gen", desc: "Create stunning visuals", icon: ImageIcon, color: "bg-blue-500/10 text-blue-500", href: "/dashboard/images" },
-    { name: "AI Video Studio", desc: "Cinematic AI videos", icon: Video, color: "bg-purple-500/10 text-purple-500", href: "/dashboard/videos" },
-    { name: "Professional CV", desc: "ATS-optimized resumes", icon: FileText, color: "bg-pink-500/10 text-pink-500", href: "/dashboard/cv" },
-    { name: "AI Content Writer", desc: "Blogs, scripts & code", icon: Sparkles, color: "bg-orange-500/10 text-orange-500", href: "/dashboard/content" },
+    { name: "AI Chat", desc: "General Assistant", icon: MessageSquare, color: "bg-blue-500/10 text-blue-500", href: "/dashboard/chat" },
+    { name: "Image Gen", desc: "Dedicated DALL-E 3", icon: ImageIcon, color: "bg-indigo-500/10 text-indigo-500", href: "/dashboard/images" },
+    { name: "Resume Analyzer", desc: "AI Review & Insights", icon: FileText, color: "bg-purple-500/10 text-purple-500", href: "/dashboard/resume" },
+    { name: "Story Generator", desc: "Children's Book Engine", icon: BookOpen, color: "bg-pink-500/10 text-pink-500", href: "/dashboard/story" },
 ];
 
 const typeIcon = {
+    chat: MessageSquare,
     image: ImageIcon,
-    video: Video,
-    cv: FileText,
-    content: Sparkles,
+    resume: FileText,
+    story: BookOpen,
 };
 
 const typeLabel = {
+    chat: 'AI Chat',
     image: 'Image Gen',
-    video: 'Video Studio',
-    cv: 'CV Builder',
-    content: 'Content Writer',
+    resume: 'Resume AI',
+    story: 'Story Gen',
 };
 
 function timeAgo(dateStr) {
@@ -91,6 +91,22 @@ export default function DashboardPage() {
                             </motion.div>
                         </Link>
                     ))}
+
+                    {/* Conditional Admin Card */}
+                    {user?.uid === 'O65GfNGOoFO0JfS8UCvW4wbyPmn2' && (
+                        <Link href="/admin">
+                            <motion.div
+                                whileHover={{ y: -5, scale: 1.02 }}
+                                className="glass p-8 rounded-3xl border border-red-500/10 hover:border-red-500/30 transition-all group cursor-pointer bg-red-500/5"
+                            >
+                                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6 bg-red-500/20 text-red-500 group-hover:scale-110 transition-transform">
+                                    <Shield className="w-6 h-6" />
+                                </div>
+                                <h3 className="text-xl font-bold mb-2 group-hover:text-red-400 transition-colors">Admin Panel</h3>
+                                <p className="text-sm text-gray-400">Platform Management & Stats</p>
+                            </motion.div>
+                        </Link>
+                    )}
                 </div>
             </div>
 

@@ -38,9 +38,9 @@ export async function syncUser(user) {
             timeSaved: 0,   // Hours
             dailyCounts: {
                 image: 0,
-                video: 0,
-                cv: 0,
-                content: 0
+                chat: 0,
+                resume: 0,
+                story: 0
             },
             lastUsageDate: new Date().toISOString().split('T')[0],
             createdAt: serverTimestamp(),
@@ -52,7 +52,12 @@ export async function syncUser(user) {
 export async function getUserProfile(uid) {
     if (!db) return null;
     const snap = await getDoc(doc(db, "users", uid));
-    return snap.exists() ? snap.data() : null;
+    if (!snap.exists()) return null;
+    const data = snap.data();
+    return {
+        ...data,
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt
+    };
 }
 
 // ─────────────────────────────────────────────
@@ -68,11 +73,11 @@ export async function saveGeneration({ uid, type, prompt, resultUrl = null, text
     const userSnap = await getDoc(userRef);
     const userData = userSnap.data();
 
-    let dailyCounts = userData?.dailyCounts || { image: 0, video: 0, cv: 0, content: 0 };
+    let dailyCounts = userData?.dailyCounts || { image: 0, chat: 0, resume: 0, story: 0 };
 
     // Reset counts if it's a new day
     if (userData?.lastUsageDate !== today) {
-        dailyCounts = { image: 0, video: 0, cv: 0, content: 0 };
+        dailyCounts = { image: 0, chat: 0, resume: 0, story: 0 };
     }
 
     // Increment count for this type
@@ -81,11 +86,14 @@ export async function saveGeneration({ uid, type, prompt, resultUrl = null, text
     // 1. Add generation document
     await addDoc(collection(db, "generations"), {
         uid,
-        type,          // 'image' | 'video' | 'cv' | 'content'
+        type,          // 'image' | 'chat' | 'resume' | 'story'
         prompt,
         resultUrl,
         textContent,
-        metadata,
+        metadata: {
+            ...metadata,
+            serialized: true // Helper for future
+        },
         createdAt: serverTimestamp(),
     });
 
@@ -113,7 +121,7 @@ export async function checkDailyLimit(uid, type) {
     if (userData.plan === 'pro') return { allowed: true };
 
     const today = new Date().toISOString().split('T')[0];
-    let counts = userData.dailyCounts || { image: 0, video: 0, cv: 0, content: 0 };
+    let counts = userData.dailyCounts || { image: 0, chat: 0, resume: 0, story: 0 };
 
     // Reset if new day
     if (userData.lastUsageDate !== today) {
@@ -121,10 +129,10 @@ export async function checkDailyLimit(uid, type) {
     }
 
     const limits = {
-        image: 3,
-        video: 1,
-        cv: 1,
-        content: 1
+        image: 5,
+        chat: 10,
+        resume: 2,
+        story: 2
     };
 
     const currentCount = counts[type] || 0;
@@ -150,7 +158,14 @@ export async function getRecentGenerations(uid, count = 5) {
         limit(count)
     );
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return snap.docs.map(d => {
+        const data = d.data();
+        return {
+            id: d.id,
+            ...data,
+            createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt
+        };
+    });
 }
 
 // Check if user has enough credits

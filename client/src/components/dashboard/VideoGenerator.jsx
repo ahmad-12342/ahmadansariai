@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Video, Download, Play, RefreshCw, Sliders, Maximize, Wand2 } from 'lucide-react';
