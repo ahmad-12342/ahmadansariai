@@ -5,6 +5,9 @@ import { X, CreditCard, ShieldCheck, Zap, Sparkles, CheckCircle2, Loader2 } from
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 const PaymentModal = ({ isOpen, onClose, plan, billingCycle }) => {
     const { user, refreshStats } = useAuth();
@@ -20,25 +23,54 @@ const PaymentModal = ({ isOpen, onClose, plan, billingCycle }) => {
         e.preventDefault();
         setLoading(true);
 
-        // Simulation of payment processing
-        setTimeout(async () => {
+        // If it's a free plan, handle it immediately
+        if (total === 0) {
             try {
                 if (user) {
                     const userRef = doc(db, "users", user.uid);
                     await updateDoc(userRef, {
                         plan: plan.name.toLowerCase(),
-                        credits: plan.name === 'Starter' ? 10 : (plan.name === 'Pro' ? 500 : 1000),
+                        credits: 10,
                     });
                     await refreshStats();
                 }
                 setStep('success');
             } catch (err) {
-                console.error("Payment update failed:", err);
-                alert("Payment successful but stat update failed. Please contact support.");
+                console.error("Free Plan activation failed:", err);
+                alert("Plan activation failed. Please try again.");
             } finally {
                 setLoading(false);
             }
-        }, 2000);
+            return;
+        }
+
+        // --- Real Stripe Checkout ---
+        try {
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    plan,
+                    billingCycle,
+                    userId: user?.uid,
+                    userEmail: user?.email
+                }),
+            });
+
+            const session = await response.json();
+
+            if (session.url) {
+                // Redirect user to Stripe Checkout
+                window.location.href = session.url;
+            } else {
+                throw new Error(session.error || 'Failed to create checkout session');
+            }
+        } catch (err) {
+            console.error("Checkout failed:", err);
+            alert("Checkout Error: " + err.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -92,33 +124,20 @@ const PaymentModal = ({ isOpen, onClose, plan, billingCycle }) => {
                                     </div>
                                 </div>
 
-                                <form onSubmit={handlePayment} className="space-y-6">
+                                <div className="space-y-6">
                                     {total > 0 ? (
-                                        <div className="space-y-4">
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Card Number</label>
-                                                <div className="relative">
-                                                    <input
-                                                        required
-                                                        placeholder="0000 0000 0000 0000"
-                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:border-primary/50 transition-all outline-none"
-                                                    />
-                                                    <CreditCard className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                                                </div>
+                                        <div className="bg-white/5 border border-white/5 rounded-2xl p-6 space-y-4">
+                                            <div className="flex items-center gap-3 text-sm text-gray-400">
+                                                <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                                Unlimited AI Generations
                                             </div>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Expiry</label>
-                                                    <input required placeholder="MM/YY" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:border-primary/50 transition-all outline-none" />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">CVV</label>
-                                                    <input required placeholder="123" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:border-primary/50 transition-all outline-none" />
-                                                </div>
+                                            <div className="flex items-center gap-3 text-sm text-gray-400">
+                                                <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                                Priority Support & High Speed
                                             </div>
-                                            <div className="flex items-center gap-2 text-[10px] text-gray-500 bg-white/5 p-3 rounded-xl border border-white/5">
+                                            <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-2 text-[10px] text-gray-500">
                                                 <ShieldCheck className="w-4 h-4 text-green-500" />
-                                                <span>Your transaction is encrypted and secured by Stripe</span>
+                                                <span>Securely encrypted payment via Stripe</span>
                                             </div>
                                         </div>
                                     ) : (
@@ -131,23 +150,29 @@ const PaymentModal = ({ isOpen, onClose, plan, billingCycle }) => {
                                     )}
 
                                     <button
-                                        type="submit"
+                                        onClick={handlePayment}
                                         disabled={loading}
                                         className="w-full py-5 rounded-full bg-primary text-white font-bold hover:bg-primary/90 transition-all shadow-xl shadow-primary/25 flex items-center justify-center gap-3 disabled:opacity-50"
                                     >
                                         {loading ? (
                                             <>
                                                 <Loader2 className="w-5 h-5 animate-spin" />
-                                                {total > 0 ? 'Processing Securely...' : 'Activating...'}
+                                                {total > 0 ? 'Redirecting to Stripe...' : 'Activating...'}
                                             </>
                                         ) : (
                                             <>
                                                 {total > 0 ? <Zap className="w-5 h-5 fill-current" /> : <Sparkles className="w-5 h-5" />}
-                                                {total > 0 ? `Pay $${total} Now` : 'Activate Free Plan'}
+                                                {total > 0 ? `Checkout $${total}` : 'Activate Free Plan'}
                                             </>
                                         )}
                                     </button>
-                                </form>
+
+                                    {total > 0 && (
+                                        <p className="text-center text-[10px] text-gray-600 uppercase tracking-widest font-bold">
+                                            Powered by Stripe • Worldwide Secured
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         ) : (
                             <div className="p-12 text-center">
