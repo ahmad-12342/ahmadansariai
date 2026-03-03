@@ -16,6 +16,8 @@ export const metadata = {
   description: "Generate images, emojis, resumes, and stories with the power of AI. Completely free and unlimited.",
   icons: {
     icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
   },
 };
 
