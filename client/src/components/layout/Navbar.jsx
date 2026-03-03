@@ -20,10 +20,8 @@ const Navbar = () => {
         <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'py-4 glass border-b border-white/10' : 'py-6 bg-transparent'
             }`}>
             <div className="container mx-auto px-6 flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2">
-                    <div className="w-10 h-10 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform rotate-3">
-                        <Sparkles className="text-white w-6 h-6" />
-                    </div>
+                <Link href="/" className="flex items-center gap-3">
+                    <img src="/logo.png" alt="Promptova AI Logo" className="w-12 h-12 rounded-xl shadow-lg transform hover:scale-110 transition-transform" />
                     <span className="text-2xl font-bold tracking-tight">Promptova<span className="text-primary italic">AI</span></span>
                 </Link>
 

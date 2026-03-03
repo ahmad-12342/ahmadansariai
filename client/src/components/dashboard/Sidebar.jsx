@@ -34,9 +34,9 @@ const Sidebar = () => {
 
     return (
         <aside className="w-64 h-screen glass border-r border-white/10 flex flex-col p-6 print:hidden">
-            <Link href="/" className="flex items-center gap-2 mb-10 pl-2">
-                <Sparkles className="text-primary w-6 h-6" />
-                <span className="text-xl font-bold">Promptova</span>
+            <Link href="/" className="flex items-center gap-3 mb-10 pl-2">
+                <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-lg" />
+                <span className="text-xl font-bold">Promptova AI</span>
             </Link>
 
             <div className="flex-1 flex flex-col gap-8">
