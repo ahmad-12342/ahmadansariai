@@ -41,8 +41,8 @@ const Hero = () => {
                     </h1>
 
                     <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-                        Generate cinematic videos, professional CVs, and high-quality content
-                        all in one powerful platform.
+                        Generate stunning images, professional CVs, and magical stories with our
+                        completely <span className="text-primary font-bold">Free & Unlimited</span> AI Studio.
                     </p>
 
                     <div className="flex flex-wrap items-center justify-center gap-4">
@@ -76,22 +76,24 @@ const Hero = () => {
                     className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20"
                 >
                     {[
-                        { icon: Video, label: "AI Video Studio", color: "text-purple-400" },
-                        { icon: FileText, label: "Professional CV", color: "text-pink-400" },
-                        { icon: Sparkles, label: "AI Content Writer", color: "text-orange-400" },
+                        { icon: ImageIcon, label: "Image Gen", color: "text-blue-400", href: "/dashboard/chat" },
+                        { icon: Sparkles, label: "Emoji Gen", color: "text-yellow-400", href: "/dashboard/emoji" },
+                        { icon: FileText, label: "Resume AI", color: "text-purple-400", href: "/dashboard/resume" },
+                        { icon: BookOpen, label: "Story Gen", color: "text-pink-400", href: "/dashboard/story" },
                     ].map((item, idx) => (
-                        <motion.div
-                            key={idx}
-                            whileHover={{ y: -12, scale: 1.02 }}
-                            animate={{ y: [0, -5, 0] }}
-                            transition={{
-                                y: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: idx * 0.2 }
-                            }}
-                            className="glass p-6 rounded-2xl border border-white/5 cursor-default group transition-shadow hover:shadow-[0_0_30px_rgba(139,92,246,0.15)]"
-                        >
-                            <item.icon className={`w-10 h-10 ${item.color} mb-4 group-hover:scale-110 transition-transform duration-500`} />
-                            <p className="font-semibold text-lg">{item.label}</p>
-                        </motion.div>
+                        <Link key={idx} href={item.href}>
+                            <motion.div
+                                whileHover={{ y: -12, scale: 1.05, borderColor: "rgba(255,255,255,0.2)" }}
+                                animate={{ y: [0, -5, 0] }}
+                                transition={{
+                                    y: { duration: 4 + idx, repeat: Infinity, ease: "easeInOut", delay: idx * 0.2 }
+                                }}
+                                className="glass p-6 rounded-2xl border border-white/5 cursor-pointer group transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]"
+                            >
+                                <item.icon className={`w-10 h-10 ${item.color} mb-4 group-hover:scale-110 transition-transform duration-500`} />
+                                <p className="font-semibold text-lg text-white">{item.label}</p>
+                            </motion.div>
+                        </Link>
                     ))}
                 </motion.div>
             </div>
