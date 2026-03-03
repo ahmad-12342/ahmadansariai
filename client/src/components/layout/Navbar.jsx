@@ -29,7 +29,7 @@ const Navbar = () => {
 
                 {/* Desktop Links */}
                 <div className="hidden md:flex items-center gap-8 mt-1">
-                    {['Features', 'Pricing', 'FAQ'].map((link) => (
+                    {['Features', 'FAQ'].map((link) => (
                         <Link key={link} href={`/#${link.toLowerCase()}`} className="text-gray-400 hover:text-white transition-colors font-medium">
                             {link}
                         </Link>
@@ -74,7 +74,7 @@ const Navbar = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="absolute top-full left-0 w-full glass border-b border-white/10 p-6 flex flex-col gap-4 md:hidden"
                 >
-                    {['Features', 'Pricing', 'FAQ'].map((link) => (
+                    {['Features', 'FAQ'].map((link) => (
                         <Link key={link} href={`/#${link.toLowerCase()}`} onClick={() => setMobileMenu(false)} className="text-lg font-medium">
                             {link}
                         </Link>

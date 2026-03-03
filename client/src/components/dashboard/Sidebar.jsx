@@ -26,7 +26,6 @@ const menuItems = [
 ];
 
 const secondaryItems = [
-    { icon: CreditCard, label: 'Pricing', href: '/#pricing' },
     { icon: User, label: 'Profile', href: '/dashboard/profile' },
 ];
 
@@ -92,17 +91,7 @@ const Sidebar = () => {
                 <span className="font-medium">Sign Out</span>
             </button>
 
-            {/* Credit Status */}
-            <div className="bg-gradient-to-br from-primary/10 to-accent/10 p-4 rounded-2xl border border-white/5">
-                <p className="text-xs text-gray-400 mb-1">Available Credits</p>
-                <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-primary" />
-                    <span className="text-lg font-bold">10 / 100</span>
-                </div>
-                <div className="w-full h-1.5 bg-white/5 rounded-full mt-2 overflow-hidden">
-                    <div className="w-[10%] h-full bg-primary rounded-full"></div>
-                </div>
-            </div>
+
         </aside>
     );
 };

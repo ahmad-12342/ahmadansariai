@@ -45,12 +45,6 @@ export default function DashboardPage() {
             color: "text-purple-400",
         },
         {
-            label: "Credits Left",
-            value: userStats ? userStats.credits.toString() : '—',
-            icon: CreditCard,
-            color: "text-blue-400",
-        },
-        {
             label: "Storage Used",
             value: userStats ? `${userStats.storageUsed >= 1024 ? (userStats.storageUsed / 1024).toFixed(1) + ' GB' : userStats.storageUsed.toFixed(1) + ' MB'}` : '—',
             icon: TrendingUp,
@@ -111,7 +105,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Live Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {stats.map((stat, idx) => (
                     <div key={idx} className="glass p-6 rounded-2xl border border-white/5">
                         <div className="flex items-center gap-4 mb-4">
@@ -211,10 +205,9 @@ export default function DashboardPage() {
                                 Detailed prompts get 10x better results!
                             </p>
                             <div className="flex items-center gap-3">
-                                <div className={`px-3 py-1 rounded-full text-xs font-bold ${userStats?.plan === 'pro' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-gray-500/20 text-gray-400'}`}>
-                                    {userStats?.plan === 'pro' ? '⭐ PRO' : 'FREE PLAN'}
+                                <div className="px-3 py-1 rounded-full text-xs font-bold bg-primary/20 text-primary">
+                                    UNLIMITED ACCESS
                                 </div>
-                                <span className="text-xs text-gray-500">{userStats?.credits ?? '—'} credits remaining</span>
                             </div>
                         </div>
                         <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform duration-700">

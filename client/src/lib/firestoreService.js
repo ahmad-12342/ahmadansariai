@@ -31,11 +31,11 @@ export async function syncUser(user) {
             email: user.email,
             displayName: user.displayName || "",
             photoURL: user.photoURL || "",
-            credits: 10,
-            plan: "free",
+            credits: 999999, // Unlimited credits
+            plan: "unlimited", // Premium plan for everyone
             totalGenerations: 0,
-            storageUsed: 0, // MB
-            timeSaved: 0,   // Hours
+            storageUsed: 0,
+            timeSaved: 0,
             dailyCounts: {
                 image: 0,
                 chat: 0,
@@ -98,9 +98,8 @@ export async function saveGeneration({ uid, type, prompt, resultUrl = null, text
         createdAt: serverTimestamp(),
     });
 
-    // 2. Update user stats in one atomic write
+    // 2. Update user stats (Unlimited/Free - no credit decrement)
     await updateDoc(userRef, {
-        credits: increment(-creditCost),
         totalGenerations: increment(1),
         storageUsed: increment(storageMB),
         timeSaved: increment(timeSavedHrs),
@@ -111,43 +110,7 @@ export async function saveGeneration({ uid, type, prompt, resultUrl = null, text
 
 // Check if user has reached daily limits (Free Plan only)
 export async function checkDailyLimit(uid, type) {
-    if (!db) return { allowed: true };
-    const userRef = doc(db, "users", uid);
-    const snap = await getDoc(userRef);
-
-    if (!snap.exists()) return { allowed: true };
-    const userData = snap.data();
-
-    // Pro users have no daily limits based on type count (they use credits)
-    if (userData.plan === 'pro') return { allowed: true };
-
-    const today = new Date().toISOString().split('T')[0];
-    let counts = userData.dailyCounts || { image: 0, chat: 0, resume: 0, story: 0, emoji: 0 };
-
-    // Reset if new day
-    if (userData.lastUsageDate !== today) {
-        return { allowed: true };
-    }
-
-    const limits = {
-        image: 5,
-        chat: 10,
-        resume: 2,
-        story: 2,
-        emoji: 10
-    };
-
-    const currentCount = counts[type] || 0;
-    const limit = limits[type] || 1;
-
-    if (currentCount >= limit) {
-        return {
-            allowed: false,
-            message: `Free plan limit reached: ${limit} ${type}${limit > 1 ? 's' : ''} per day. Upgrade to Pro for more!`
-        };
-    }
-
-    return { allowed: true };
+    return { allowed: true }; // Unlimited for everyone
 }
 
 // Get recent N generations for a user
@@ -172,6 +135,5 @@ export async function getRecentGenerations(uid, count = 5) {
 
 // Check if user has enough credits
 export async function hasCredits(uid, required) {
-    const profile = await getUserProfile(uid);
-    return profile && profile.credits >= required;
+    return true; // Always has credits in unlimited mode
 }
