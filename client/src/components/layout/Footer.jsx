@@ -35,12 +35,18 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="font-bold mb-6">Company</h4>
-                        <ul className="space-y-4 text-gray-400">
+                        <h4 className="font-bold mb-6 text-white uppercase tracking-widest text-xs">Company</h4>
+                        <ul className="space-y-4 text-gray-400 text-sm">
                             <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-                            <li><Link href="/careers" className="hover:text-white transition-colors">Careers</Link></li>
-                            <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-                            <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+                            <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
+                            <li className="pt-2 border-t border-white/5">
+                                <p className="text-[10px] text-gray-500 uppercase mb-1">Email</p>
+                                <a href="mailto:muhammadansariahmad323@gmail.com" className="text-white hover:text-primary transition-colors block truncate">muhammadansariahmad323@gmail.com</a>
+                            </li>
+                            <li>
+                                <p className="text-[10px] text-gray-500 uppercase mb-1">Phone</p>
+                                <a href="tel:03252207294" className="text-white hover:text-primary transition-colors block">03252207294</a>
+                            </li>
                         </ul>
                     </div>
 
