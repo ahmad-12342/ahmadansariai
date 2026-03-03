@@ -13,7 +13,7 @@ import {
     Search, RefreshCw, Trash2, ChevronDown, ChevronUp,
     Loader2, AlertTriangle, Check, X, Plus, Minus,
     BarChart2, Clock, ImageIcon, Video, FileText, Zap,
-    LogOut, Home
+    LogOut, Home, MessageSquare, BookOpen
 } from 'lucide-react';
 import Link from 'next/link';
 
