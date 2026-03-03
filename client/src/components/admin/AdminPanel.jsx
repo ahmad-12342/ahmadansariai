@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-const ADMIN_EMAIL = 'muhammadansariahmad323@gmail.com';
+const ADMIN_UID = 'O65GfNGOoFO0JfS8UCvW4wbyPmn2';
 
 // ── Small stat card ──
 function StatCard({ icon: Icon, label, value, color, sub }) {
@@ -80,14 +80,14 @@ export default function AdminPanel() {
 
     // ── Auth guard ──
     useEffect(() => {
-        if (!loading && (!user || user.email !== ADMIN_EMAIL)) {
+        if (!loading && (!user || user.uid !== ADMIN_UID)) {
             router.replace('/dashboard');
         }
     }, [user, loading, router]);
 
     // ── Fetch all data ──
     const fetchData = useCallback(async () => {
-        if (!user || user.email !== ADMIN_EMAIL) return;
+        if (!user || user.uid !== ADMIN_UID) return;
         setLoading(true);
         try {
             // Users
@@ -127,7 +127,7 @@ export default function AdminPanel() {
         setExpanded(null);
     };
 
-    if (loading || !user || user.email !== ADMIN_EMAIL) {
+    if (loading || !user || user.uid !== ADMIN_UID) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <Loader2 className="w-8 h-8 text-primary animate-spin" />
@@ -368,7 +368,7 @@ export default function AdminPanel() {
                                                             </div>
 
                                                             {/* Delete */}
-                                                            {u.email !== ADMIN_EMAIL && (
+                                                            {u.uid !== ADMIN_UID && (
                                                                 <div>
                                                                     {deleteConfirm === u.uid ? (
                                                                         <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">

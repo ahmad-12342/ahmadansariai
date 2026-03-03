@@ -88,7 +88,7 @@ const Sidebar = () => {
                     </div>
                 </div>
 
-                {user?.email === 'muhammadansariahmad323@gmail.com' && (
+                {user?.uid === 'O65GfNGOoFO0JfS8UCvW4wbyPmn2' && (
                     <div>
                         <p className="text-xs font-bold text-red-500/80 uppercase tracking-widest mb-4 pl-2">Restricted</p>
                         <Link
