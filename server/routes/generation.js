@@ -29,8 +29,7 @@ router.get('/history/:firebaseId', async (req, res) => {
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         const generations = await Generation.find({ userId: user._id })
-            .sort({ createdAt: -1 })
-            .limit(20);
+            .sort({ createdAt: -1 }); // No limit — all history permanently preserved
 
         res.json(generations);
     } catch (err) {

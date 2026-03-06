@@ -88,12 +88,15 @@ export default function ResumeAnalyzer() {
             return;
         }
 
-        if (user) {
-            const limitCheck = await checkDailyLimit(user.uid, 'resume');
-            if (!limitCheck.allowed) {
-                setError(limitCheck.message);
-                return;
-            }
+        if (!user) {
+            setError('Bina login kare aap resume analyze nahi kar sakte. Please login ya signup karein!');
+            return;
+        }
+
+        const limitCheck = await checkDailyLimit(user.uid, 'resume');
+        if (!limitCheck.allowed) {
+            setError(limitCheck.message);
+            return;
         }
 
         setAnalyzing(true);

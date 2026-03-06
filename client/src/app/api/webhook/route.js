@@ -3,10 +3,13 @@ import Stripe from 'stripe';
 import { db } from '@/lib/firebase';
 import { doc, updateDoc, increment } from 'firebase/firestore';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(req) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+        return NextResponse.json({ error: 'Webhook not configured.' }, { status: 503 });
+    }
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const body = await req.text();
     const sig = req.headers.get('stripe-signature');
 
@@ -63,9 +66,4 @@ export async function POST(req) {
     }
 }
 
-// Stripe requires the raw body for signature verification
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
+// Note: rawBody is handled via req.text() above — no deprecated config needed

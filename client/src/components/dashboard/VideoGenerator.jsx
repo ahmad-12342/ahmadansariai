@@ -53,13 +53,16 @@ const VideoGenerator = () => {
     const handleGenerate = async () => {
         if (!prompt) return;
 
-        // ✅ Check Daily Limits for Free Plan
-        if (user) {
-            const limitCheck = await checkDailyLimit(user.uid, 'video');
-            if (!limitCheck.allowed) {
-                alert(limitCheck.message);
-                return;
-            }
+        if (!user) {
+            alert('Bina login kare aap video generate nahi kar sakte. Please login ya signup karein!');
+            window.location.href = '/login';
+            return;
+        }
+
+        const limitCheck = await checkDailyLimit(user.uid, 'video');
+        if (!limitCheck.allowed) {
+            alert(limitCheck.message);
+            return;
         }
 
         console.log("Generating with OpenAI Video Model...");

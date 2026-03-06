@@ -16,7 +16,19 @@ const SUGGESTIONS = [
 
 export default function ChatAssistant() {
     const { user, refreshStats } = useAuth();
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('promptovaai_chat_history');
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch (e) {
+                    console.error("Failed to parse chat history", e);
+                }
+            }
+        }
+        return [];
+    });
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -30,6 +42,12 @@ export default function ChatAssistant() {
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('promptovaai_chat_history', JSON.stringify(messages));
+        }
     }, [messages]);
 
     useEffect(() => {
@@ -118,13 +136,17 @@ export default function ChatAssistant() {
             const containsTrigger = imageTriggers.some(t => message.toLowerCase().includes(t));
             const isIntentImage = forcedImage || (containsTrigger && message.length < 150);
 
-            if (user) {
-                const limitCheck = await checkDailyLimit(user.uid, isIntentImage ? 'image' : 'chat');
-                if (!limitCheck.allowed) {
-                    addMsg({ type: 'bot', text: `⚠️ ${limitCheck.message}` });
-                    setLoading(false);
-                    return;
-                }
+            if (!user) {
+                addMsg({ type: 'bot', text: `⚠️ Bina login kare aap AI Assistant use nahi kar sakte. \n\nPlease [Login ya Signup](/login) karein.` });
+                setLoading(false);
+                return;
+            }
+
+            const limitCheck = await checkDailyLimit(user.uid, isIntentImage ? 'image' : 'chat');
+            if (!limitCheck.allowed) {
+                addMsg({ type: 'bot', text: `⚠️ ${limitCheck.message}` });
+                setLoading(false);
+                return;
             }
 
             if (isIntentImage) {
@@ -237,7 +259,12 @@ export default function ChatAssistant() {
                     </div>
                 </div>
                 <button
-                    onClick={() => setMessages([])}
+                    onClick={() => {
+                        if (confirm('Are you sure you want to start a new session? This will clear your current chat.')) {
+                            setMessages([]);
+                            localStorage.removeItem('promptovaai_chat_history');
+                        }
+                    }}
                     className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold text-gray-400 hover:text-white hover:bg-white/5 border border-white/5 transition-all active:scale-95"
                 >
                     <Plus className="w-4 h-4" />

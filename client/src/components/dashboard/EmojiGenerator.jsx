@@ -31,12 +31,16 @@ const EmojiGenerator = () => {
     const handleGenerate = async () => {
         if (!prompt.trim() || generating) return;
 
-        if (user) {
-            const limitCheck = await checkDailyLimit(user.uid, 'emoji');
-            if (!limitCheck.allowed) {
-                alert(limitCheck.message);
-                return;
-            }
+        if (!user) {
+            alert('Bina login kare aap emoji generate nahi kar sakte. Please login ya signup karein!');
+            window.location.href = '/login';
+            return;
+        }
+
+        const limitCheck = await checkDailyLimit(user.uid, 'emoji');
+        if (!limitCheck.allowed) {
+            alert(limitCheck.message);
+            return;
         }
 
         setGenerating(true);
@@ -185,7 +189,7 @@ const EmojiGenerator = () => {
                                             className="flex-1 py-4 bg-white/5 border border-white/10 rounded-2xl text-white text-xs font-bold hover:bg-white/10 transition-all flex items-center justify-center gap-2"
                                         >
                                             {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                                            {copied ? 'Copied URL' : 'Copy URL'}
+                                            {copied ? 'Copied' : 'Copy'}
                                         </button>
                                         <button
                                             onClick={handleDownload}

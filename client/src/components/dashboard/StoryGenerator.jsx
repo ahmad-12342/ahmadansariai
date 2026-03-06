@@ -118,12 +118,16 @@ export default function StoryGenerator() {
     const handleGenerate = async (e) => {
         e.preventDefault();
 
-        if (user) {
-            const limitCheck = await checkDailyLimit(user.uid, 'story');
-            if (!limitCheck.allowed) {
-                alert(limitCheck.message);
-                return;
-            }
+        if (!user) {
+            alert('Bina login kare aap story generate nahi kar sakte. Please login ya signup karein!');
+            window.location.href = '/login';
+            return;
+        }
+
+        const limitCheck = await checkDailyLimit(user.uid, 'story');
+        if (!limitCheck.allowed) {
+            alert(limitCheck.message);
+            return;
         }
 
         setGenerating(true);

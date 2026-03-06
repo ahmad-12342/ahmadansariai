@@ -42,7 +42,12 @@ app.get('/', (req, res) => {
     res.json({ message: 'Promptova AI API is running' });
 });
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-});
+// Start Server ONLY if not running in production/serverless environment
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+    });
+}
+
+// Export the app for Vercel Serverless Functions
+export default app;

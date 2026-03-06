@@ -57,13 +57,17 @@ const ImageGenerator = () => {
     const handleGenerate = async () => {
         if (!prompt.trim() && !referenceImage) return;
 
-        // ✅ Check Daily Limits for Free Plan
-        if (user) {
-            const limitCheck = await checkDailyLimit(user.uid, 'image');
-            if (!limitCheck.allowed) {
-                alert(limitCheck.message);
-                return;
-            }
+        // ✅ Check Login and Daily Limits
+        if (!user) {
+            alert("Bina login kare aap image generate nahi kar sakte. Please login ya signup karein!");
+            window.location.href = '/login';
+            return;
+        }
+
+        const limitCheck = await checkDailyLimit(user.uid, 'image');
+        if (!limitCheck.allowed) {
+            alert(limitCheck.message);
+            return;
         }
 
         console.log("Generating with OpenAI DALL-E...");
